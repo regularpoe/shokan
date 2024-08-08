@@ -12,13 +12,16 @@ defmodule Shokan do
   def main(args) do
     {opts, _, _} =
       OptionParser.parse(args,
-        switches: [schema: :string, number: :integer, info: :boolean, generate: :string],
-        aliases: [s: :schema, n: :number, i: :info, g: :generate]
+        switches: [schema: :string, number: :integer, info: :boolean, generate: :string, list: :boolean],
+        aliases: [s: :schema, n: :number, i: :info, g: :generate, l: :list]
       )
 
     cond do
       opts[:info] ->
         print_available_functions()
+
+      opts[:list] ->
+        list_of_shortcuts()
 
       opts[:generate] ->
         generate_schema(opts[:generate])
@@ -62,6 +65,14 @@ defmodule Shokan do
     else
       IO.puts("  Module not loaded or doesn't exist.")
     end
+  end
+
+  defp list_of_shortcuts do
+    IO.puts("Available shortcuts in generate function:")
+
+    @schema_map
+    |> Map.keys()
+    |> Enum.each(fn key -> IO.puts("  #{key}: #{@schema_map[key]}") end)
   end
 
   defp generate_data(schema, count) do
