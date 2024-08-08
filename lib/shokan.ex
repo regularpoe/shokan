@@ -1,36 +1,45 @@
 defmodule Shokan do
   @faker_modules [
-    Faker.Address
+    Faker.Address,
+    Faker.Airports
   ]
+
+  @schema_map %{
+    "Address" => "Faker.Address.street_address",
+    "Airport" => "Faker.Airports.name"
+  }
 
   def main(args) do
     {opts, _, _} =
       OptionParser.parse(args,
-        switches: [schema: :string, number: :integer, info: :boolean],
-        aliases: [s: :schema, n: :number, i: :info]
+        switches: [schema: :string, number: :integer, info: :boolean, generate: :string],
+        aliases: [s: :schema, n: :number, i: :info, g: :generate]
       )
 
-    if opts[:info] do
-      print_available_functions()
-    else
-      schema_file = opts[:schema]
-      number_of_objects = opts[:number]
+    cond do
+      opts[:info] ->
+        print_available_functions()
 
-      if schema_file && number_of_objects do
-        {:ok, schema} = File.read(schema_file)
+      opts[:generate] ->
+        generate_schema(opts[:generate])
+
+      opts[:schema] && opts[:number] ->
+        {:ok, schema} = File.read(opts[:schema])
 
         case Jason.decode(schema) do
           {:ok, schema_map} ->
-            generate_data(schema_map, number_of_objects)
+            generate_data(schema_map, opts[:number])
             |> Jason.encode!()
             |> IO.puts()
 
           {:error, _} ->
-            IO.puts("Invalid JSON schema")
+            IO.puts("Invalid JSON schema.")
         end
-      else
-        IO.puts("Usage: shokan -s schema.json -n <number_of_objects>")
-      end
+
+      true ->
+        IO.puts(
+          "Usage: shokan -s schema.json -n <number of objects> | -g \"name:Name,address:Address,email:Email\" | -i"
+        )
     end
   end
 
@@ -74,5 +83,19 @@ defmodule Shokan do
     else
       "Unknown"
     end
+  end
+
+  defp generate_schema(user_input) do
+    schema =
+      user_input
+      |> String.split(",")
+      |> Enum.map(fn pair ->
+        [field, type] = String.split(pair, ":")
+        {field, Map.get(@schema_map, type, "Unknown")}
+      end)
+      |> Enum.into(%{})
+
+    schema_json = Jason.encode!(schema, pretty: true)
+    IO.puts(schema_json)
   end
 end
