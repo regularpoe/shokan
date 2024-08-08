@@ -2,6 +2,10 @@
 
 shokan is a command line tool to quickly create fake JSON data. It uses Jason library for dealing with JSON, and Faker library to generate fake data.
 
+## TODO
+
+    - Add rest of the modules, and shortcuts
+
 ## Usage
 
 To use this tool, clone the repo and build it by running:
