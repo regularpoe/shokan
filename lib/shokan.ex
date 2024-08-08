@@ -35,8 +35,15 @@ defmodule Shokan do
     end
   end
 
-  defp generate_value("name"), do: Faker.Person.name()
-  defp generate_value("address"), do: Faker.Address.street_address()
-  defp generate_value("email"), do: Faker.Internet.email()
-  defp generate_value(_), do: "Unknown"
+  defp generate_value(function_path) do
+    [module_name | func_parts] = String.split(function_path, ".")
+    func_name = List.last(func_parts) |> String.to_atom()
+    module_name = Module.concat([String.to_atom(module_name), List.first(func_parts)])
+
+    if Code.ensure_loaded?(module_name) && function_exported?(module_name, func_name, 0) do
+      apply(module_name, func_name, [])
+    else
+      "Unknown"
+    end
+  end
 end
