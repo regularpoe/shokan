@@ -1,28 +1,57 @@
 defmodule Shokan do
+  @faker_modules [
+    Faker.Address
+  ]
+
   def main(args) do
     {opts, _, _} =
       OptionParser.parse(args,
-        switches: [schema: :string, number: :integer],
-        aliases: [s: :schema, n: :number]
+        switches: [schema: :string, number: :integer, info: :boolean],
+        aliases: [s: :schema, n: :number, i: :info]
       )
 
-    schema_file = opts[:schema]
-    number_of_objects = opts[:number]
-
-    if schema_file && number_of_objects do
-      {:ok, schema} = File.read(schema_file)
-
-      case Jason.decode(schema) do
-        {:ok, schema_map} ->
-          generate_data(schema_map, number_of_objects)
-          |> Jason.encode!()
-          |> IO.puts()
-
-        {:error, _} ->
-          IO.puts("Invalid JSON schema")
-      end
+    if opts[:info] do
+      print_available_functions()
     else
-      IO.puts("Usage: shokan -s schema.json -n <number_of_objects>")
+      schema_file = opts[:schema]
+      number_of_objects = opts[:number]
+
+      if schema_file && number_of_objects do
+        {:ok, schema} = File.read(schema_file)
+
+        case Jason.decode(schema) do
+          {:ok, schema_map} ->
+            generate_data(schema_map, number_of_objects)
+            |> Jason.encode!()
+            |> IO.puts()
+
+          {:error, _} ->
+            IO.puts("Invalid JSON schema")
+        end
+      else
+        IO.puts("Usage: shokan -s schema.json -n <number_of_objects>")
+      end
+    end
+  end
+
+  defp print_available_functions() do
+    IO.puts("Available Faker functions:")
+
+    @faker_modules
+    |> Enum.each(&print_available_functions/1)
+  end
+
+  defp print_available_functions(module) do
+    IO.puts("\n#{inspect(module)}:")
+
+    if Code.ensure_loaded?(module) do
+      functions = module.__info__(:functions)
+
+      Enum.each(functions, fn {func, arity} ->
+        IO.puts("  #{func}/#{arity}")
+      end)
+    else
+      IO.puts("  Module not loaded or doesn't exist.")
     end
   end
 
