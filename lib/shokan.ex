@@ -1,7 +1,38 @@
 defmodule Shokan do
   @faker_modules [
     Faker.Address,
-    Faker.Airports
+    Faker.Airports,
+    Faker.App,
+    Faker.Avatar,
+    Faker.Beer,
+    Faker.Bitcoin,
+    Faker.Cannabis,
+    Faker.Cat,
+    Faker.Code,
+    Faker.Color,
+    Faker.Commerce,
+    Faker.Company,
+    Faker.Currency,
+    Faker.Date,
+    Faker.DateTime,
+    Faker.File,
+    Faker.Finance,
+    Faker.Food,
+    Faker.Industry,
+    Faker.Internet,
+    Faker.Lorem,
+    Faker.Markdown,
+    Faker.NaiveDateTime,
+    Faker.Nato,
+    Faker.Person,
+    Faker.Pizza,
+    Faker.Pokemon,
+    Faker.StarWars,
+    Faker.String,
+    Faker.Superhero,
+    Faker.Team,
+    Faker.UUID,
+    Faker.Vehicle
   ]
 
   @schema_map %{
