@@ -9,6 +9,7 @@ defmodule Shokan do
     Faker.Cannabis,
     Faker.Cat,
     Faker.Code,
+    Faker.Code.Iban,
     Faker.Color,
     Faker.Commerce,
     Faker.Company,
@@ -25,6 +26,7 @@ defmodule Shokan do
     Faker.NaiveDateTime,
     Faker.Nato,
     Faker.Person,
+    Faker.Phone.EnUs,
     Faker.Pizza,
     Faker.Pokemon,
     Faker.StarWars,
@@ -37,7 +39,38 @@ defmodule Shokan do
 
   @schema_map %{
     "Address" => "Faker.Address.street_address",
-    "Airport" => "Faker.Airports.name"
+    "City" => "Faker.Address.city",
+    "CountryCode" => "Faker.Address.country_code",
+    "Country" => "Faker.Address.country",
+    "Latitude" => "Faker.Address.latitude",
+    "Longitude" => "Faker.Address.longitude",
+    "Postcode" => "Faker.Address.postcode",
+    "AppName" => "Faker.App.name",
+    "AppSemver" => "Faker.App.semver",
+    "IBAN" => "Faker.Code.iban",
+    "IBANValid" => "Faker.Code.Iban.iban",
+    "ProductDepartment" => "Faker.Commerce.department",
+    "ProductPrice" => "Faker.Commerce.price",
+    "ProductName" => "Faker.Commerce.product_name",
+    "ProductMaterial" => "Faker.Commerce.product_name_material",
+    "CompanyName" => "Faker.Company.name",
+    "CompanyPhrase" => "Faker.Company.catch_phrase",
+    "CompanyBS" => "Faker.Company.bs",
+    "Industry" => "Faker.Industry.industry",
+    "IndustrySector" => "Faker.Industry.sector",
+    "InternetDomain" => "Faker.Internet.domain_name",
+    "InternetEmail" => "Faker.Internet.email",
+    "InternetIpv4" => "Faker.Internet.ip_v4_address",
+    "InternetIpv6" => "Faker.Internet.ip_v6_address",
+    "InternetURL" => "Faker.Internet.url",
+    "InternetUsername" => "Faker.Internet.user_name",
+    "PersonFirst" => "Faker.Person.first_name",
+    "PersonLast" => "Faker.Person.last_name",
+    "PersonFull" => "Faker.Person.name",
+    "Phone" => "Faker.Phone.EnUs.phone",
+    "StringBase64" => "Faker.String.base64",
+    "StringACME" => "Faker.String.naughty",
+    "UUID" => "Faker.UUID.v4"
   }
 
   def main(args) do
@@ -103,6 +136,7 @@ defmodule Shokan do
 
     @schema_map
     |> Map.keys()
+    |> Enum.sort()
     |> Enum.each(fn key -> IO.puts("  #{key}: #{@schema_map[key]}") end)
   end
 
